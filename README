@@ -1,0 +1,49 @@
+This is the TrustZone project. 
+U-Boot is in Secure World. Linux 2.6.35 is in Normal World.
+
+Setup Environment:
+    export CROSS_COMPILE=arm-none-linux-gnueabi-
+    export ARCH=arm
+
+
+1. To compile U-Boot:
+(1) make mx53loco_defconfig
+(2) sudo dd if=u-boot.imx of=/dev/mmcblk0 bs=512 seek=2
+
+2. To Compile Linux-2.6.35:
+(1) make imx5_defconfig
+(2) make 
+(3) make uImage
+(4) sudo dd if=arch/arm/boot/uImage of=/dev/mmcblk0 bs=512 seek=2048
+
+Change U-Boot parameters:
+(1) setenv bootargs_base 'setenv bootargs console=ttymxc0,115200'
+(2) setenv bootargs_mmc 'setenv bootargs ${bootargs} ip=192.168.10.1 root=/dev/mmcblk0p1 rootwait rw' 
+(3) setenv bootcmd_mmc 'run bootargs_base bootargs_mmc;mmc dev 0;mmc read ${loadaddr} 0x800 0x4000;bootm'
+(4) setenv bootcmd 'run bootcmd_mmc'
+(5) saveenv
+(6) run bootcmd
+
+3. File System
+
+Create and format rootfs partition (/dev/mmcblk0p1) on SD card.
+
+Run sudo fdisk /dev/mmcblk0
+
+u [switch the unit to sectors instead of cylinders]
+d [repeat this until no partition is reported by the ‘p’ command ]
+n [create a new partition]
+p [create a primary partition]
+1 [the first partition]
+8192 [starting at offset sector #8192, i.e. 4MB, which leaves enough space
+for the kernel, the boot loader and its configuration data]
+[using the default value will create a partition that spans to the
+ last sector of the medium]
+w [ this writes the partition table to the medium and fdisk exits]
+ 
+sudo mkfs.ext4 /dev/mmcblk0p1
+
+Go to the downloaded rootfs.
+sudo cp -rpa [A-z]* /media/844b21c5-9e3b-4b5c-907d-afa9e582f39a/
+
+sync
