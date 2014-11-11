@@ -26,6 +26,7 @@ endif
 
 obj-$(CONFIG_OF_LIBFDT) += bootm-fdt.o
 obj-$(CONFIG_CMD_BOOTM) += bootm.o
+obj-$(CONFIG_CMD_BOOTM) += tz-secure.o
 obj-$(CONFIG_SYS_L2_PL310) += cache-pl310.o
 obj-$(CONFIG_USE_ARCH_MEMSET) += memset.o
 obj-$(CONFIG_USE_ARCH_MEMCPY) += memcpy.o
