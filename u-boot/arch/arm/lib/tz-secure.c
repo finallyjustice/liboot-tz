@@ -107,6 +107,8 @@ void boot_linux_kernel_entry(void)
 	kernel_entry(0, my_machid, my_r2);
 }
 
+extern void init_secure_monitor();
+
 void start_transition(bootm_headers_t *images, unsigned long machid, unsigned long r2)
 {
 	*R32 CSL0  = 0x00ff00ff;
