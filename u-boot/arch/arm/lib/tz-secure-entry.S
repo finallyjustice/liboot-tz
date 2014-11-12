@@ -14,12 +14,6 @@
 
 .equ NS_BIT,   0x1
 
-
-.global init_tz
-.align 4
-init_tz:
-
-
 .global tz_monitor
 .align 5
 tz_monitor:

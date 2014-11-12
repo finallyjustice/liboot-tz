@@ -100,8 +100,30 @@ bootm_headers_t *my_images;
 unsigned long my_machid;
 unsigned long my_r2;
 
+void normal_world_func(void)
+{
+	printf("This is normal world!\n");
+	asm volatile(
+			".arch_extension sec\n\t"
+			"smc #0\n\t");
+
+	int i;
+	for(i=0; i<10; i++)
+	{
+		printf("Hello you are in normal world!\n");
+		asm volatile(
+			".arch_extension sec\n\t"
+			"smc #0\n\t");
+	}
+
+	while(1);
+}
+
 void boot_linux_kernel_entry(void)
 {
+	printf("Hello, I am in normal world now!\n");
+	printf("I can boot the kernel in this way!\n");
+
 	void (*kernel_entry)(int zero, int arch, uint params);
 	kernel_entry = (void (*)(int, int, uint))my_images->ep;
 	kernel_entry(0, my_machid, my_r2);
@@ -212,17 +234,7 @@ void start_transition(bootm_headers_t *images, unsigned long machid, unsigned lo
 	scs1 = scs1 | 0x7d;
 	*R8 IIM_SCS1 = scs1;
 
-	printf("Now TZIC_INTCTRL is : 0x%x\n", intctrl);
-
-	__asm__ volatile(
-			"mrc p15, 0, r0, c1, c1, 0\n\t"
-			"mov r1, r0\n\t"
-			"orr r0, r1, #0x31\n\t"
-			"mcr p15, 0, r0, c1, c1, 0\n\t"
-			:
-			:
-			: "r0","r1"
-	);
+	printf("Now TZIC_INTCTRL is : 0x%x\n", intctrl);	
 
 	printf("End Set TrustZone NS Bit to 1\n");
 	printf("Jump to Linux in Normal World! \n");
@@ -230,8 +242,45 @@ void start_transition(bootm_headers_t *images, unsigned long machid, unsigned lo
 	my_images = images;
 	my_machid = machid;
 	my_r2     = r2;
+	
+	__asm__ volatile("cps #0x16");
+	__asm__ volatile("ldr sp, =0x8f000000");
+	
+	int sp_val = 0;
+	__asm__ volatile(
+			"mov %0, sp\n\t"
+			: "=r"(sp_val)
+			:
+			: "r0"
+	);
+	printf("curr sp: 0x%08lx\n", sp_val);
 
-	boot_linux_kernel_entry();
+	init_secure_monitor(boot_linux_kernel_entry);
+	//init_secure_monitor(normal_world_func);
+	printf("You should not come to here!\n");
+
+	while(1)
+	{
+		printf("Hello you are in secure world!\n");
+		asm volatile(
+			".arch_extension sec\n\t"
+			"smc #0\n\t");
+
+	}
+
+	while(1);
+
+	/*__asm__ volatile(
+			"mrc p15, 0, r0, c1, c1, 0\n\t"
+			"mov r1, r0\n\t"
+			"orr r0, r1, #0x31\n\t"
+			"mcr p15, 0, r0, c1, c1, 0\n\t"
+			:
+			:
+			: "r0","r1"
+	);*/
+
+	//boot_linux_kernel_entry();
 
 	return;
 }
