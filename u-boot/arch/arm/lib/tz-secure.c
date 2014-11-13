@@ -131,6 +131,21 @@ void boot_linux_kernel_entry(void)
 
 extern void init_secure_monitor();
 
+void secure_world_handler(void)
+{
+	while(1)
+	{
+		printf("###########TrustZone Secure World#############\n");
+		printf("We will process your request in secure world...\n");
+		printf("Currently we are doing nothing in secure world.\n");
+		printf("##############################################\n");
+		
+		asm volatile(
+			".arch_extension sec\n\t"
+			"smc #0\n\t");
+	}
+}
+
 void start_transition(bootm_headers_t *images, unsigned long machid, unsigned long r2)
 {
 	*R32 CSL0  = 0x00ff00ff;
@@ -246,29 +261,30 @@ void start_transition(bootm_headers_t *images, unsigned long machid, unsigned lo
 	__asm__ volatile("cps #0x16");
 	__asm__ volatile("ldr sp, =0x8f000000");
 	
-	int sp_val = 0;
+	unsigned int sp_val = 0;
 	__asm__ volatile(
 			"mov %0, sp\n\t"
 			: "=r"(sp_val)
 			:
 			: "r0"
 	);
-	printf("curr sp: 0x%08lx\n", sp_val);
+	printf("curr sp: 0x%08x\n", sp_val);
 
 	init_secure_monitor(boot_linux_kernel_entry);
 	//init_secure_monitor(normal_world_func);
-	printf("You should not come to here!\n");
+	//printf("You should not come to here!\n");
 
-	while(1)
-	{
-		printf("Hello you are in secure world!\n");
-		asm volatile(
-			".arch_extension sec\n\t"
-			"smc #0\n\t");
+	secure_world_handler();
+	//while(1)
+	//{
+	//	printf("Hello you are in secure world!\n");
+	//	asm volatile(
+	//		".arch_extension sec\n\t"
+	//		"smc #0\n\t");
+//
+	//}
 
-	}
-
-	while(1);
+	//while(1);
 
 	/*__asm__ volatile(
 			"mrc p15, 0, r0, c1, c1, 0\n\t"
