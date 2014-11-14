@@ -5,4 +5,6 @@ It has been tested on :
 To test, run :
 sudo mknod /dev/tz_smc c 50 0
 
+When run "cat /dev/tz_smc", you would be able to transit to TrustZone secure world.
+
 For any question, please contact Dongli Zhang @ dongli.zhang0129@gmail.com.

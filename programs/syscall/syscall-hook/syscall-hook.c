@@ -7,6 +7,7 @@
 //ssize_t *sys_call_table = (ssize_t *)0x800329c4;
 ssize_t *sys_call_table = (ssize_t *)NULL;
 
+// obtain the base address of system call table 
 void get_sys_call_table(void)
 {
 	void *swi_addr = (long *)0xffff0008;
