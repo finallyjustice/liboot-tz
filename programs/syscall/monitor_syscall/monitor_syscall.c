@@ -5,7 +5,8 @@
 #include <linux/syscalls.h>
 
 //ssize_t *sys_call_table = (ssize_t *)0x800329c4;
-ssize_t *sys_call_table = (ssize_t *)NULL;
+//ssize_t *sys_call_table = (ssize_t *)NULL;
+unsigned long *sys_call_table = (unsigned long *)NULL;
 
 void get_sys_call_table(void)
 {
@@ -26,6 +27,8 @@ void get_sys_call_table(void)
 		}
 	}
 
+	printk(KERN_ALERT "sys_call_table base: 0x%08x\n", sys_call_table);
+
 	return;
 }
 
@@ -33,10 +36,11 @@ void print_syscall_table(void)
 {
 	unsigned long sys_num = 0;
 
-	while(sys_call_table[sys_num] != 0)
+	//while(sys_call_table[sys_num] != 0)
+	for(sys_num=0; sys_num<10; sys_num++)
 	{
 		printk(KERN_ALERT "%d: 0x%08x\n", sys_num, sys_call_table[sys_num]);
-		sys_num++;
+		//sys_num++;
 	}
 }
 
