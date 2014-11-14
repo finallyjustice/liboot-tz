@@ -1,3 +1,14 @@
+/*
+ * Copyright Dongli Zhang, 2014
+ *
+ * Authors: 
+ *  Dongli Zhang   <dongli.zhang0129@gmail.com>
+ *
+ * This work is licensed under the terms of the GNU GPL, version 2.  See
+ * the COPYING file in the top-level directory.
+ *
+ */
+
 #include <common.h>
 #include <command.h>
 #include <image.h>
@@ -119,6 +130,7 @@ void normal_world_func(void)
 	while(1);
 }
 
+// jump to normal world linux kernel
 void boot_linux_kernel_entry(void)
 {
 	printf("Hello, I am in normal world now!\n");
@@ -135,6 +147,7 @@ static int monitor_enabled = 0;
 #define NUM_SYSCALL 500
 unsigned long sys_call_backup[NUM_SYSCALL];
 
+// system call table monitor in secure world
 void syscall_monitor(void)
 {
 	unsigned long *sys_call_table = (unsigned *)0x700329c4;
@@ -167,6 +180,7 @@ void syscall_monitor(void)
 	return;
 }
 
+// default secure world handler
 void secure_world_handler(void)
 {
 	while(1)
@@ -183,8 +197,10 @@ void secure_world_handler(void)
 	}
 }
 
+// preparation before jumping to Linux
 void start_transition(bootm_headers_t *images, unsigned long machid, unsigned long r2)
 {
+	// change CSU policy
 	*R32 CSL0  = 0x00ff00ff;
 	*R32 CSL1  = 0x00ff00ff;
 	*R32 CSL2  = 0x00ff00ff;
