@@ -44,7 +44,7 @@ static int __init hook_init(void)
 	printk(KERN_ALERT "syscall table: 0x%8x\n", sys_call_table);
 	old_mkdir = sys_call_table[__NR_mkdir];
 	sys_call_table[__NR_mkdir] = new_mkdir;
-	printk(KERN_ALERT "hook successfully! 0x%08x\n", old_mkdir);
+	printk(KERN_ALERT "hook %d successfully! 0x%08x\n", __NR_mkdir, old_mkdir);
 	return 0;
 }
 

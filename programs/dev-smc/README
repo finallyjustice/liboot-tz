@@ -3,6 +3,6 @@ It has been tested on :
 - Linux 2.6.35 and i.MX53 QSB.
 
 To test, run :
-sudo mknod /dev/temp c 50 0
+sudo mknod /dev/tz_smc c 50 0
 
 For any question, please contact Dongli Zhang @ dongli.zhang0129@gmail.com.
