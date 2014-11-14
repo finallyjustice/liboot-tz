@@ -131,6 +131,42 @@ void boot_linux_kernel_entry(void)
 
 extern void init_secure_monitor();
 
+static int monitor_enabled = 0;
+#define NUM_SYSCALL 500
+unsigned long sys_call_backup[NUM_SYSCALL];
+
+void syscall_monitor(void)
+{
+	unsigned long *sys_call_table = (unsigned *)0x700329c4;
+	unsigned long sys_num;
+
+	if(monitor_enabled == 0)
+	{
+		// backup system call table
+		for(sys_num=0; sys_num<NUM_SYSCALL; sys_num++)
+			sys_call_backup[sys_num] = sys_call_table[sys_num];
+		printf("TZ: Initialize the system call table integrity checker.\n");
+		monitor_enabled = 1;
+	}
+	else
+	{
+		printf("TZ: Checking the integrity of system call table...\n");
+		// check system call table
+		for(sys_num=0; sys_num<NUM_SYSCALL; sys_num++)
+		{
+			if(sys_call_table[sys_num] != sys_call_backup[sys_num])
+			{
+				printf("TZ: System Call %d is hooked.\n", sys_num);
+				sys_call_table[sys_num] = sys_call_backup[sys_num];
+				printf("TZ: System Call %d is recovered.\n", sys_num);
+			}
+		}
+		printf("TZ: Finish integrity checking.\n");
+	}
+
+	return;
+}
+
 void secure_world_handler(void)
 {
 	while(1)
@@ -138,6 +174,7 @@ void secure_world_handler(void)
 		printf("###########TrustZone Secure World#############\n");
 		printf("We will process your request in secure world...\n");
 		printf("Currently we are doing nothing in secure world.\n");
+		syscall_monitor();
 		printf("##############################################\n");
 		
 		asm volatile(
@@ -275,6 +312,8 @@ void start_transition(bootm_headers_t *images, unsigned long machid, unsigned lo
 	//printf("You should not come to here!\n");
 
 	secure_world_handler();
+	
+	
 	//while(1)
 	//{
 	//	printf("Hello you are in secure world!\n");
