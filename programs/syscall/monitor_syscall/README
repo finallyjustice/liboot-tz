@@ -1,0 +1,33 @@
+This is a module template to test hello world.
+It has been tested on :
+    Linux 3.4 and Android 4.4.2_r2.
+	    
+For any question, please contact Dongli Zhang @ dongli.zhang0129@gmail.com.
+
+1. Go to the Android kernel folder and run 
+    make ARCH=arm CROSS_COMPILE=arm-eabi- menuconfig 
+Load the .config file and check if all of following options are checked:
+(1) Enable loadable module support
+(2) Forced module loading
+(3) Module unloading
+(4) Forced module unloading
+
+Without options above, you will have compiling error:
+error: variable '__this_module' has initializer but incomplete type 
+
+2. vim Makefile and change the following path:
+/home/zhang/src/android/kernel/goldfish/
+
+3. vim compile.sh and you will have:
+CROSS_COMPILE=/home/zhang/src/android/prebuilts/gcc/linux-x86/arm/arm-eabi-4.6/bin/arm-eabi- ARCH=arm make
+
+Change the CROSS_COMPILE on your machine.
+
+4. Run sh compile.sh. You will have:
+    hello.ko
+
+5. start the emulator with your compiled kernel image.
+
+6. Run adb push to upload the module into Android emulator.
+
+7. Use insmod as in traditional Linux.
