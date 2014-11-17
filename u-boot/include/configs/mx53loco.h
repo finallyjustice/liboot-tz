@@ -108,7 +108,9 @@
 #define CONFIG_ETHPRIME		"FEC0"
 
 #define CONFIG_LOADADDR		0x70010000	/* loadaddr env var */
-#define CONFIG_SYS_TEXT_BASE    0x77800000
+#define CONFIG_SYS_TEXT_BASE    0xc1800000
+/* Dongli-Comment */
+/* #define CONFIG_SYS_TEXT_BASE 0x77800000 */
 
 #define CONFIG_EXTRA_ENV_SETTINGS \
 	"initrd_high=0xffffffff\0" \
