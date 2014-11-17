@@ -113,6 +113,12 @@ static void setup_memory_tags(bd_t *bd)
 		params->u.mem.start = bd->bi_dram[i].start;
 		params->u.mem.size = bd->bi_dram[i].size;
 
+		// Dongli-Start
+		if(i == 1)
+			params->u.mem.size = 268435456;
+		printf("#### DRAM Bank %d: 0x%08x, %d\n", i, params->u.mem.start, params->u.mem.size);
+		// Dongli-End
+
 		params = tag_next (params);
 	}
 }
