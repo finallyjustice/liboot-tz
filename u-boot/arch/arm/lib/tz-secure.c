@@ -25,6 +25,23 @@
 #define R8    (volatile unsigned char *)
 #define MY_CSU_BASE_ADDR   0x63F9C000
 
+// secure memory start
+#define M4IF_BASE_ADDR  0x63FD8000
+
+#define M4IF_WMSA0_6    0x63FD80EC
+#define M4IF_WMEA0_6    0x63FD810C
+#define M4IF_WMIS0      0x63FD8114
+
+// base address of secure data
+#define SECURE_DATA 0xC5100000
+enum
+{
+	SD0 = SECURE_DATA + 0x00,
+	SD1 = SECURE_DATA + 0x04,
+};
+
+// secure memory end
+
 enum
 {
 	CSL0    = MY_CSU_BASE_ADDR + 0x00,
@@ -135,6 +152,8 @@ void boot_linux_kernel_entry(void)
 {
 	printf("Hello, I am in normal world now!\n");
 	printf("I can boot the kernel in this way!\n");
+
+	//go_to_normal();
 
 	void (*kernel_entry)(int zero, int arch, uint params);
 	kernel_entry = (void (*)(int, int, uint))my_images->ep;
@@ -323,35 +342,20 @@ void start_transition(bootm_headers_t *images, unsigned long machid, unsigned lo
 	);
 	printf("curr sp: 0x%08x\n", sp_val);
 
+	// set secure memory
+	*R32 M4IF_WMEA0_6 = 0x000C5FFF;  // end of secure memory
+	*R32 M4IF_WMSA0_6 = 0x800C5000;  // start of secure memory
+	*R32 M4IF_WMIS0   = 0x80000000;  // enable secure memory
+	// init two secure data field
+	*R32 SD0 = 0x11223344;
+	*R32 SD1 = 0x55667788;
+	// end secure memory
+
 	init_secure_monitor(boot_linux_kernel_entry);
 	//init_secure_monitor(normal_world_func);
 	//printf("You should not come to here!\n");
 
 	secure_world_handler();
 	
-	
-	//while(1)
-	//{
-	//	printf("Hello you are in secure world!\n");
-	//	asm volatile(
-	//		".arch_extension sec\n\t"
-	//		"smc #0\n\t");
-//
-	//}
-
-	//while(1);
-
-	/*__asm__ volatile(
-			"mrc p15, 0, r0, c1, c1, 0\n\t"
-			"mov r1, r0\n\t"
-			"orr r0, r1, #0x31\n\t"
-			"mcr p15, 0, r0, c1, c1, 0\n\t"
-			:
-			:
-			: "r0","r1"
-	);*/
-
-	//boot_linux_kernel_entry();
-
 	return;
 }
