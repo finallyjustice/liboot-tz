@@ -1,0 +1,3 @@
+LDSCRIPT := $(SRCTREE)/board/$(VENDOR)/$(BOARD)/u-boot.lds
+
+TEXT_BASE = 0xc1800000
