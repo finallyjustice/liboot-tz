@@ -152,9 +152,7 @@ void boot_linux_kernel_entry(void)
 {
 	printf("Hello, I am in normal world now!\n");
 	printf("I can boot the kernel in this way!\n");
-
-	//go_to_normal();
-
+	
 	void (*kernel_entry)(int zero, int arch, uint params);
 	kernel_entry = (void (*)(int, int, uint))my_images->ep;
 	kernel_entry(0, my_machid, my_r2);
@@ -215,6 +213,9 @@ void secure_world_handler(void)
 			"smc #0\n\t");
 	}
 }
+
+extern void norm_begin(void);
+extern unsigned long reloc_begin;
 
 // preparation before jumping to Linux
 void start_transition(bootm_headers_t *images, unsigned long machid, unsigned long r2)
@@ -301,17 +302,18 @@ void start_transition(bootm_headers_t *images, unsigned long machid, unsigned lo
 			: "r0"
 	);
 
-	if(scr_val & 0x1)
+	/*if(scr_val & 0x1)
 		printf("TrustZone NS Bit is 1 - Normal\n");
 	else
 		printf("TrustZone NS Bit is 0 - Secure\n");
 
 	printf("SCR Reg: 0x%x\n", scr_val);
+	printf("SCR Reg1\n");
 
-	printf("Begin Set TrustZone NS Bit to 1\n");
+	printf("Begin Set TrustZone NS Bit to 1\n");*/
 
 	unsigned int intctrl = *R32 TZIC_INTCTRL;
-	printf("TZIC_INTCTRL is : 0x%x\n", intctrl);
+	//printf("TZIC_INTCTRL is : 0x%x\n", intctrl);
 
 	intctrl = intctrl | 0x10001;
 	//intctrl = intctrl | 0x80010001;
@@ -321,9 +323,9 @@ void start_transition(bootm_headers_t *images, unsigned long machid, unsigned lo
 	scs1 = scs1 | 0x7d;
 	*R8 IIM_SCS1 = scs1;
 
-	printf("Now TZIC_INTCTRL is : 0x%x\n", intctrl);	
+	//printf("Now TZIC_INTCTRL is : 0x%x\n", intctrl);	
 
-	printf("End Set TrustZone NS Bit to 1\n");
+	//printf("End Set TrustZone NS Bit to 1\n");
 	printf("Jump to Linux in Normal World! \n");
 
 	my_images = images;
@@ -342,6 +344,10 @@ void start_transition(bootm_headers_t *images, unsigned long machid, unsigned lo
 	);
 	printf("curr sp: 0x%08x\n", sp_val);
 
+	printf("machid      : %d\n", my_machid);
+	printf("r2          : 0x%08x\n", my_r2);
+	printf("kernel entry: 0x%08x\n", my_images->ep);
+
 	// set secure memory
 	*R32 M4IF_WMEA0_6 = 0x000C5FFF;  // end of secure memory
 	*R32 M4IF_WMSA0_6 = 0x800C5000;  // start of secure memory
@@ -350,8 +356,9 @@ void start_transition(bootm_headers_t *images, unsigned long machid, unsigned lo
 	*R32 SD0 = 0x11223344;
 	*R32 SD1 = 0x55667788;
 	// end secure memory
-
-	init_secure_monitor(boot_linux_kernel_entry);
+	printf("reloc_begin: 0x%08x\n", reloc_begin);
+	init_secure_monitor(norm_begin);
+	//init_secure_monitor(boot_linux_kernel_entry);
 	//init_secure_monitor(normal_world_func);
 	//printf("You should not come to here!\n");
 

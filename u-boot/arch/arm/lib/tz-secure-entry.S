@@ -168,6 +168,7 @@ init_secure_monitor:
 	mov r12, #0
 
 	movs pc, lr
+#ldr pc, =norm_begin
 
 @ ------------------------------------------------------------
 @ Space reserved for secure and non-secure stacks
