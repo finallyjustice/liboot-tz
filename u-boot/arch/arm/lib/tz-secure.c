@@ -215,11 +215,16 @@ void secure_world_handler(void)
 }
 
 extern void norm_begin(void);
-extern unsigned long reloc_begin;
+extern void _reloc_begin(void);
+extern void _reloc_end(void);
 
 // preparation before jumping to Linux
 void start_transition(bootm_headers_t *images, unsigned long machid, unsigned long r2)
 {
+	printf("reloc_begin: 0x%x\n", _reloc_begin);
+	printf("reloc_end  : 0x%x\n", _reloc_end);
+	printf("start_transition  : 0x%x\n", &start_transition);
+
 	// change CSU policy
 	*R32 CSL0  = 0x00ff00ff;
 	*R32 CSL1  = 0x00ff00ff;
@@ -356,7 +361,7 @@ void start_transition(bootm_headers_t *images, unsigned long machid, unsigned lo
 	*R32 SD0 = 0x11223344;
 	*R32 SD1 = 0x55667788;
 	// end secure memory
-	printf("reloc_begin: 0x%08x\n", reloc_begin);
+	
 	init_secure_monitor(norm_begin);
 	//init_secure_monitor(boot_linux_kernel_entry);
 	//init_secure_monitor(normal_world_func);
