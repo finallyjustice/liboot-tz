@@ -27,6 +27,10 @@
 #include <u-boot/zlib.h>
 #include <asm/byteorder.h>
 
+//Dongli-start
+extern void start_transition(bootm_headers_t *images, unsigned long machid, unsigned long r2    );
+//Dongli-end
+
 DECLARE_GLOBAL_DATA_PTR;
 
 #if defined (CONFIG_SETUP_MEMORY_TAGS) || \
@@ -58,6 +62,7 @@ static struct tag *params;
 
 int do_bootm_linux(int flag, int argc, char *argv[], bootm_headers_t *images)
 {
+	printf("do_bootm_linux: 0x%08x\n", &do_bootm_linux);
 	bd_t	*bd = gd->bd;
 	char	*s;
 	int	machid = bd->bi_arch_number;
@@ -98,6 +103,7 @@ int do_bootm_linux(int flag, int argc, char *argv[], bootm_headers_t *images)
 	setup_revision_tag (&params);
 #endif
 #ifdef CONFIG_SETUP_MEMORY_TAGS
+	printf("setup_memory_tags\n");
 	setup_memory_tags (bd);
 #endif
 #ifdef CONFIG_CMDLINE_TAG
@@ -127,9 +133,10 @@ int do_bootm_linux(int flag, int argc, char *argv[], bootm_headers_t *images)
 
 	//Dongli-start
 	printf("#### Kernel is booted.\n");
-	//Dongli-edn
-
-	theKernel (0, machid, bd->bi_boot_params);
+	printf("###### We are jumping to the kernel now!!!!\n");
+	start_transition(images, machid, bd->bi_boot_params);
+	//Dongli-end
+	//theKernel (0, machid, bd->bi_boot_params);
 	/* does not return */
 
 	return 1;

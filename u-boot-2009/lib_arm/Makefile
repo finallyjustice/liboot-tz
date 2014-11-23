@@ -41,6 +41,9 @@ COBJS-y	+= bootm.o
 COBJS-y	+= cache.o
 COBJS-y	+= interrupts.o
 COBJS-y	+= reset.o
+COBJS-y	+= tz-secure.o
+COBJS-y	+= tz-secure-entry.o
+COBJS-y	+= tz-normal-entry.o
 
 SRCS	:= $(GLSOBJS:.o=.S) $(GLCOBJS:.o=.c) \
 	   $(SOBJS-y:.o=.S) $(COBJS-y:.o=.c)
@@ -72,8 +75,8 @@ $(LIBGCC): $(obj).depend $(LGOBJS)
 #########################################################################
 
 # defines $(obj).depend target
-include $(SRCTREE)/rules.mk
+#comment include $(SRCTREE)/rules.mk
 
-sinclude $(obj).depend
+#comment sinclude $(obj).depend
 
 #########################################################################
