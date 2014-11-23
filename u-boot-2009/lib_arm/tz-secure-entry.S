@@ -167,6 +167,11 @@ init_secure_monitor:
 	mov r11, #0
 	mov r12, #0
 
+#mov r0, #0
+#ldr r1, =3273
+#ldr r2, =0x70000100
+#ldr pc, =0x70008000
+
 	movs pc, lr
 #ldr pc, =norm_begin
 
