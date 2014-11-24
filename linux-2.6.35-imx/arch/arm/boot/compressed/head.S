@@ -136,6 +136,14 @@ wait:		mrc	p14, 0, pc, c0, c1, 0
  */
 		.align
 start:
+		@ Dongli-start
+		@ Switch to Normal world
+		@ -----------------------
+		mrc p15, 0, r4, c1, c1, 0           @ Read Secure Configuration Register data
+		orr r4, #0x1                     @ Set NS bit
+		mcr p15, 0, r4, c1, c1, 0           @ Write Secure Configuration Register data
+		@ Dongli-end
+
 		.type	start,#function
 		.rept	8
 		mov	r0, r0

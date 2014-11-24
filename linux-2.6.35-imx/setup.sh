@@ -3,3 +3,5 @@
 # make imx5_defconfig
 
 sudo dd if=arch/arm/boot/uImage of=/dev/mmcblk0 bs=512 seek=2048
+
+# change arch/arm/boot/compressed/head.S
