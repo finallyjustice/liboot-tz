@@ -23,8 +23,12 @@
 // secure memory start
 #define M4IF_BASE_ADDR  0x63FD8000
 
-#define M4IF_WMSA0_6    0x63FD80EC
-#define M4IF_WMEA0_6    0x63FD810C
+//#define M4IF_WMSA0_6    0x63FD80EC
+//#define M4IF_WMEA0_6    0x63FD810C
+//#define M4IF_WMIS0      0x63FD8114
+
+#define M4IF_WMSA0_6    0x63FD80F0
+#define M4IF_WMEA0_6    0x63FD8110
 #define M4IF_WMIS0      0x63FD8114
 
 // base address of secure data
@@ -346,8 +350,8 @@ void start_transition(bootm_headers_t *images, unsigned long machid, unsigned lo
 	printf("kernel entry: 0x%08x\n", my_images->ep);
 
 	// set secure memory
-	*R32 M4IF_WMEA0_6 = 0x000C5FFF;  // end of secure memory
-	*R32 M4IF_WMSA0_6 = 0x800C5000;  // start of secure memory
+	*R32 M4IF_WMEA0_6 = 0x000CFFFF;  // end of secure memory
+	*R32 M4IF_WMSA0_6 = 0x800C0000;  // start of secure memory
 	*R32 M4IF_WMIS0   = 0x80000000;  // enable secure memory
 	// init two secure data field
 	*R32 SD0 = 0x11223344;

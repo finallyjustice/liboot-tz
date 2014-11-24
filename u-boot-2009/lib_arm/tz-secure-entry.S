@@ -147,9 +147,9 @@ init_secure_monitor:
 
 	@ Switch to Normal world
 	@ -----------------------
-	mrc p15, 0, r4, c1, c1, 0           @ Read Secure Configuration Register data
-	orr r4, #NS_BIT                     @ Set NS bit
-	mcr p15, 0, r4, c1, c1, 0           @ Write Secure Configuration Register data
+#mrc p15, 0, r4, c1, c1, 0           @ Read Secure Configuration Register data
+#orr r4, #NS_BIT                     @ Set NS bit
+#mcr p15, 0, r4, c1, c1, 0           @ Write Secure Configuration Register data
 
 	@ Clear general purpose registers
 	@ --------------------------------
