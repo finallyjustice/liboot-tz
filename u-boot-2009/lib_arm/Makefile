@@ -36,14 +36,16 @@ GLSOBJS	+= _umodsi3.o
 
 GLCOBJS	+= div0.o
 
+# Dongli-start
+SOBJS-y	+= tz-secure-entry.o
+SOBJS-y	+= tz-normal-entry.o
+COBJS-y	+= tz-secure.o
+# Dongli-end
 COBJS-y	+= board.o
 COBJS-y	+= bootm.o
 COBJS-y	+= cache.o
 COBJS-y	+= interrupts.o
 COBJS-y	+= reset.o
-COBJS-y	+= tz-secure.o
-COBJS-y	+= tz-secure-entry.o
-COBJS-y	+= tz-normal-entry.o
 
 SRCS	:= $(GLSOBJS:.o=.S) $(GLCOBJS:.o=.c) \
 	   $(SOBJS-y:.o=.S) $(COBJS-y:.o=.c)
@@ -75,8 +77,8 @@ $(LIBGCC): $(obj).depend $(LGOBJS)
 #########################################################################
 
 # defines $(obj).depend target
-#comment include $(SRCTREE)/rules.mk
+include $(SRCTREE)/rules.mk
 
-#comment sinclude $(obj).depend
+include $(obj).depend
 
 #########################################################################

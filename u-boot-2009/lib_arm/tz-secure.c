@@ -361,22 +361,7 @@ void start_transition(bootm_headers_t *images, unsigned long machid, unsigned lo
 	printf("_reloc_begin: 0x%x\n", &_reloc_begin);
 	printf("_reloc_end  : 0x%x\n", &_reloc_end);
 
-	// copy the reloc binary to tmp address
-	unsigned char *new_func = 0x85000000;
-	unsigned char *old_func = (unsigned char *)&_reloc_begin;
-	
-	unsigned char *ca = old_func;
-	int i = 0;
-	for(ca=old_func; ca<=&_reloc_end+0x40; ca++)
-	{
-		new_func[i] = *ca;
-		i++;
-	}
-
-	void (*dongli_dest) (void) = 0x85000000;
-
-	init_secure_monitor(old_func);
-	//init_secure_monitor(norm_begin);
+	init_secure_monitor(norm_begin);
 	//init_secure_monitor(boot_linux_kernel_entry);
 	//init_secure_monitor(normal_world_func);
 	//printf("You should not come to here!\n");
