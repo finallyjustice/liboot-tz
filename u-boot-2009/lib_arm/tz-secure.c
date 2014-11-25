@@ -334,7 +334,7 @@ void start_transition(bootm_headers_t *images, unsigned long machid, unsigned lo
 	my_r2     = r2;
 	
 	__asm__ volatile("cps #0x16");
-	__asm__ volatile("ldr sp, =0x8f000000");
+	__asm__ volatile("ldr sp, =0xcf000000");
 	
 	unsigned int sp_val = 0;
 	__asm__ volatile(
