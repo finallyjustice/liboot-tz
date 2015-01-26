@@ -1,0 +1,10 @@
+This is a module template to measure the performance of SMC call.
+It has been tested on :
+- Linux 2.6.35 and i.MX53 QSB.
+
+To test, run :
+sudo mknod /dev/tz_smc c 50 0
+
+When run "cat /dev/tz_smc", you would be able to transit to TrustZone secure world.
+
+For any question, please contact Dongli Zhang @ dongli.zhang0129@gmail.com.
